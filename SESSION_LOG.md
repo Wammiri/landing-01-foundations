@@ -9,19 +9,20 @@ Appended after every session. Never deleted. Newest entry at the bottom.
 **Who:** Claude Code, suite level setup session (run from the `landing-suite` root, covering all five projects).
 
 **What landed:**
+
 - `SPEC.md` renamed from `01-foundations.md` so the kickoff prompt resolves.
 - Building pack created: `CLAUDE.md`, `DISCOVERY.md`, `DECISIONS.md`, `BATCH_PLAN.md`, `SESSION_LOG.md`, `CHANGELOG.md`.
 - Weight class set to LIGHT and recorded as decision D-01.
-- Git repository initialised, no remote yet.
+- Git repository initialised and pushed to `Wammiri/landing-01-foundations` (public).
 
 **Verification:** none applicable. No product code exists yet. Toolchain verified at suite level: Node 22.22.2, npm 10.9.7, git 2.53.0, Vercel CLI 52.0.0 present, GitHub CLI authenticated as `Wammiri`.
 
-**Commits pushed:** none. Repo initialised locally; the remote is a human gate.
+**Commits pushed:** `chore(pack): B0 building pack, spec, and gitignore`, pushed to `Wammiri/landing-01-foundations` (public) on branch `main`. The remote exists and is tracking, so B1 can push without stopping to ask.
 
 **Flags for Isaac:**
+
 1. **Vercel CLI is not logged in.** `vercel whoami` found no credentials. Run `vercel login` in a real terminal before any deploy. A Vercel CLI update is also available (52.0.0 to 56.5.0).
 2. **GA4 Measurement ID needed.** Create the property and the data stream for this site, then replace `G-XXXXXXXXXX` in `app/layout.tsx`.
-3. **GitHub remote not created.** Create the repo and add the remote, or authorise Claude to run `gh repo create`.
 
 **Parked:** B2 is blocked pending deploy, which is blocked pending Vercel login.
 
