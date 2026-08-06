@@ -24,7 +24,9 @@ Every significant decision, including the ones where nothing gets built. Status 
 
 **Traded off:** Roughly 30 to 50 KB gzipped of client JS on a page targeting Lighthouse 95+. Mitigated by keeping client components to three: counter, ticker hover, form.
 
-**Pin the version** at install time and record it here once known.
+**Pinned versions** (recorded at install time, B1-01): `framer-motion` 13.0.0 (exact, no caret), Next.js 16.3.0, React 19.2.8, TypeScript 5, Tailwind 4.
+
+**Note on Tailwind:** the scaffold produced Tailwind v4, which has no `tailwind.config.ts`. Design tokens therefore live in an `@theme` block in `app/globals.css` rather than a JS config file. `BATCH_PLAN.md` lists `tailwind.config.ts` in B1's file inventory; that file is intentionally absent because v4 does not use it.
 
 **Status:** settled
 
