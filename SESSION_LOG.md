@@ -83,3 +83,41 @@ Beyond the ten, the pass also measured contrast (body 7.32:1, headings 15.49:1, 
 **Next:** B2, after Isaac deploys.
 
 ---
+
+## 2026-08-07. Session 2: batch B1a, real GA4 Measurement ID
+
+**Who:** Claude Code. Unplanned batch, entered through the plan rather than bolted onto B2, per the methodology's rule on new requirements.
+
+**Why it exists:** Isaac deployed to `https://landing-01-foundations.vercel.app/` and supplied the real Measurement ID `G-0QXCCQYR17`. The deployed build still carried the `G-XXXXXXXXXX` placeholder, confirmed by fetching the live page: three placeholder occurrences, zero real ones. GA4 was therefore collecting nothing. B2 cannot verify events against a property that is not wired, so this had to land first.
+
+**What landed:**
+
+- `feat(analytics): B1a-01 wire the real GA4 measurement id`. Placeholder replaced in all three places in `app/layout.tsx`. Hardcoded rather than read from an env var, recorded as D-11.
+- `fix(analytics): B1a-02 stop cta_click starving course_signup`. See the bug below.
+- `test(e2e): B1a-03 assert course_signup is transmitted, not queued`.
+
+**Verification: rung 4**, live end to end against the real GA4 property. This is a rung above B1, because the events could finally be checked against a real Measurement ID by observing the `/g/collect` requests leaving the browser.
+
+- Build clean, lint clean, all ten B1 assertions still passing.
+- Confirmed `page_view`, `cta_click`, and `course_signup` all transmit to `G-0QXCCQYR17`, with no other Measurement ID seen.
+- Confirmed the invalid submit path still reports `cta_click`.
+
+**One real bug found, and it is the interesting one:**
+
+`course_signup` reached `dataLayer` but **never left the browser**. GA4 batches events arriving in the same tick, and the `cta_click` fired alongside it on submit was starving it: the collect request for the conversion was simply never sent. The B1 assertion passed because it only inspected `dataLayer`, which is the queue, not the wire.
+
+This is exactly the failure the methodology's verification ladder is meant to catch: build and lint passing, and even a behavioral assertion passing, did not mean the behavior was correct. It took rung 4 against the real property to see it.
+
+Fixed by firing `cta_click` only on an invalid submit, so a converting submit sends `course_signup` alone. Recorded as D-15. A new assertion (7b) now checks the collect request itself rather than the queue, so this cannot regress silently.
+
+**Flags for Isaac:**
+
+1. **Redeploy is needed.** The fix is pushed but the live site still serves the old build with the placeholder. Run `vercel --prod` again. Until then GA4 still collects nothing.
+2. **Then confirm in GA4 DebugView** that `page_view`, `cta_click`, and `course_signup` all appear from the live URL. That is B2-01 and it needs your logged in browser.
+3. **Meta Pixel** remains commented, unchanged.
+
+**Parked:** B2, now blocked only on the redeploy above plus a real PageSpeed run.
+
+**Next:** B2, once the redeploy is live.
+
+---

@@ -101,6 +101,31 @@ test.describe("Foundations landing page", () => {
       .toBe(true);
   });
 
+  /*
+    Reaching dataLayer is not the same as reaching GA4. An earlier build queued
+    course_signup and never transmitted it, because a cta_click firing in the
+    same tick starved it inside GA4's batching window. This asserts the request
+    actually leaves the browser.
+  */
+  test("7b. course_signup is transmitted to GA4, not just queued", async ({ page }) => {
+    const sent: string[] = [];
+    page.on("request", (request) => {
+      const url = request.url();
+      if (url.includes("/g/collect")) {
+        const event = new URL(url).searchParams.get("en");
+        if (event) sent.push(event);
+      }
+    });
+
+    await page.goto("/");
+    await page.waitForFunction(() => typeof (window as unknown as { gtag?: unknown }).gtag === "function");
+
+    await page.getByLabel("Email address").fill("reader@example.com");
+    await page.getByRole("button", { name: "Send me Day 1 free" }).click();
+
+    await expect.poll(() => sent.includes("course_signup"), { timeout: 15000 }).toBe(true);
+  });
+
   test("8. no horizontal overflow at 390px", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");

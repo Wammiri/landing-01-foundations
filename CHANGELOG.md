@@ -24,7 +24,16 @@ All notable changes to Foundations. Format based on Keep a Changelog. This proje
 - Focus ring was near invisible on the two amber filled buttons, because `transition-all` animated `outline-color` from a dark `currentColor`. The transition is now scoped to transform and filter.
 - Scroll revealed copy could stay stuck at opacity 0 if JavaScript never ran. A `noscript` branch now forces it visible.
 
+### Added (B1a, 2026-08-07)
+
+- Real GA4 Measurement ID `G-0QXCCQYR17` wired into `app/layout.tsx`, replacing the `G-XXXXXXXXXX` placeholder in all three places. Hardcoded, not read from an env var: a Measurement ID ships in client HTML regardless, so it is not a secret.
+- A Playwright assertion that checks `course_signup` actually leaves the browser as a `/g/collect` request, not just that it reached `dataLayer`.
+
+### Fixed (B1a)
+
+- `course_signup` was reaching `dataLayer` but never transmitting to GA4. Firing `cta_click` in the same tick as `course_signup` on a valid submit meant GA4's batching starved the conversion event. `cta_click` now only fires on an invalid submit; a valid one sends `course_signup` alone. Found by live verification against the real GA4 property, which the placeholder ID had made impossible until now.
+
 ### Notes
 
 - Zero raster images, zero emoji, zero em dashes. Contrast measured at 7.32:1 or better throughout.
-- The GA4 Measurement ID is still the `G-XXXXXXXXXX` placeholder and the page is not deployed. Both are human gates.
+- The site is deployed at `https://landing-01-foundations.vercel.app/` but that build still serves the placeholder ID pending a redeploy of this fix.

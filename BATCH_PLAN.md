@@ -1,6 +1,6 @@
 # BATCH_PLAN: Foundations
 
-Two batches. B1 builds and verifies the page. B2 is the post deploy handoff and only runs after Isaac has deployed.
+Three batches. B1 builds and verifies the page. B1a is an unplanned batch that entered through the plan once Isaac deployed and supplied the real GA4 ID. B2 is the post deploy handoff and only runs after the current build is actually live.
 
 Status values: `not started`, `in progress`, `blocked: pending X`, `done`.
 
@@ -82,11 +82,35 @@ Record the rung and the results in `SESSION_LOG.md`.
 
 ---
 
+## B1a. Wire the real GA4 Measurement ID
+
+**Status:** done (2026-08-07). Entered through the plan, not bolted onto B2, per the methodology's rule on new requirements arriving mid project.
+
+**Depends on:** B1 done, Isaac deployed and supplied the real ID.
+
+**Goal:** Replace the placeholder Measurement ID now that Isaac has one, and confirm events actually reach GA4, not just `dataLayer`.
+
+**Files touched:** `app/layout.tsx`, `components/SignupForm.tsx`, `tests/foundations.spec.ts`, `DECISIONS.md`, `SESSION_LOG.md`, `CHANGELOG.md`, this file.
+
+**Tasks, one commit each:**
+
+| ID | Task | Commit message |
+|---|---|---|
+| B1a-01 | Replace `G-XXXXXXXXXX` with `G-0QXCCQYR17` in all three places, hardcoded per D-11 | `feat(analytics): B1a-01 wire the real GA4 measurement id` |
+| B1a-02 | Fix `course_signup` never transmitting: `cta_click` now fires only on an invalid submit, so a converting submit is not starved by GA4's batching | `fix(analytics): B1a-02 stop cta_click starving course_signup` |
+| B1a-03 | Add a Playwright assertion that checks the `/g/collect` request itself, not just `dataLayer` | `test(e2e): B1a-03 assert course_signup is transmitted, not queued` |
+
+**Verification: rung 4**, live end to end against the real `G-0QXCCQYR17` property. All ten B1 assertions still pass; `page_view`, `cta_click`, and `course_signup` confirmed transmitting by observing outgoing `/g/collect` requests. Full record in `SESSION_LOG.md`.
+
+**Flag for Isaac:** the live site still serves the pre fix build. Redeploy (`vercel --prod`) before B2-01 checks DebugView, or the placeholder ID and the batching bug will still be live.
+
+---
+
 ## B2. Post deploy handoff
 
-**Status:** blocked: pending Isaac deploying to Vercel and running PageSpeed Insights
+**Status:** blocked: pending Isaac redeploying the B1a fix and running PageSpeed Insights
 
-**Depends on:** B1 done, then Isaac deploys.
+**Depends on:** B1a done, then Isaac redeploys.
 
 **Goal:** Hand the production URL and the real Lighthouse mobile score to project `05-isaac-site`, which needs them for `[TODO_URL_1]` and `[TODO_SCORE_1]`.
 
