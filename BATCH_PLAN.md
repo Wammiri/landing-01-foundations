@@ -108,21 +108,25 @@ Record the rung and the results in `SESSION_LOG.md`.
 
 ## B2. Post deploy handoff
 
-**Status:** blocked: pending Isaac redeploying the B1a fix and running PageSpeed Insights
+**Status:** partially done (2026-08-07). B2-01 done: Isaac confirmed `page_view`, `cta_click`, and `course_signup` in GA4 DebugView on the redeployed, B1a-fixed build. B2-02 deliberately skipped on Isaac's instruction, not forgotten: no PageSpeed mobile score was run. B2-03 done for the URL, open for the score.
 
 **Depends on:** B1a done, then Isaac redeploys.
 
 **Goal:** Hand the production URL and the real Lighthouse mobile score to project `05-isaac-site`, which needs them for `[TODO_URL_1]` and `[TODO_SCORE_1]`.
 
+**Production URL:** `https://landing-01-foundations.vercel.app/`
+
 **Tasks:**
 
-| ID | Task |
-|---|---|
-| B2-01 | Confirm GA4 DebugView shows `page_view`, `cta_click`, and `course_signup` on the live URL |
-| B2-02 | Record the production URL and the real PageSpeed mobile score in `SESSION_LOG.md`. Do not guess the score. |
-| B2-03 | Report both to Isaac for entry into project 05 |
+| ID | Task | Status |
+|---|---|---|
+| B2-01 | Confirm GA4 DebugView shows `page_view`, `cta_click`, and `course_signup` on the live URL | done, confirmed by Isaac |
+| B2-02 | Record the production URL and the real PageSpeed mobile score in `SESSION_LOG.md`. Do not guess the score. | skipped by Isaac's instruction. URL recorded above; no score recorded, because none was run |
+| B2-03 | Report both to Isaac for entry into project 05 | URL ready to report. `[TODO_SCORE_1]` in project 05 cannot be filled without a real score |
 
-**Verification: rung 4**, live end to end against the deployed page and the real GA4 property.
+**Verification: rung 4**, live end to end against the deployed page and the real GA4 property. Complete for analytics; not run for performance.
+
+**Trigger to revisit:** if project `05-isaac-site` is worked on before a score exists, `[TODO_SCORE_1]` will need either a real PageSpeed run or an explicit decision to launch the catalog without it.
 
 ---
 

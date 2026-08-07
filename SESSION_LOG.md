@@ -121,3 +121,24 @@ Fixed by firing `cta_click` only on an invalid submit, so a converting submit se
 **Next:** B2, once the redeploy is live.
 
 ---
+
+## 2026-08-07. Session 3: B2, post deploy handoff (partial)
+
+**Who:** Isaac, redeployed and confirmed directly. Claude Code recorded the outcome.
+
+**What happened:** Isaac redeployed the B1a fix and confirmed in GA4 DebugView that `page_view`, `cta_click`, and `course_signup` all fire correctly on the live URL, `https://landing-01-foundations.vercel.app/`. That closes B2-01 and the analytics half of this project's scope: the batching bug from session 2 is confirmed fixed against the real, redeployed build, not just the local one.
+
+**Explicitly skipped, not forgotten:** Isaac instructed skipping PageSpeed Insights. No real Lighthouse mobile score exists for this build. Per the methodology, a skipped required input gets a decision and a trigger, not silent completion, so B2-02 is marked skipped in `BATCH_PLAN.md` rather than done, and `[TODO_SCORE_1]` in project `05-isaac-site` cannot be filled from this session.
+
+**Verification:** rung 4 for the analytics half, live against the real GA4 property, confirmed by Isaac directly in DebugView. No verification run for performance.
+
+**Flags for Isaac:**
+
+1. **`[TODO_SCORE_1]` in project `05-isaac-site` is still open.** The URL is ready to hand over; the score is not. If project 05 is worked on before a real PageSpeed run happens, that field needs either the run or an explicit decision to launch without it.
+2. Nothing else outstanding on Foundations itself. The build, the deploy, and the analytics are all confirmed working.
+
+**Parked:** the PageSpeed run, on Isaac's instruction, no trigger date set.
+
+**Next:** nothing scheduled on this project. If a score is wanted later, it is a small follow up: run PageSpeed Insights against the live URL and record the number, no code change implied unless the score reveals a real problem.
+
+---
