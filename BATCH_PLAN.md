@@ -8,7 +8,9 @@ Status values: `not started`, `in progress`, `blocked: pending X`, `done`.
 
 ## B1. Build the page to spec
 
-**Status:** not started
+**Status:** done (2026-08-07). All twelve tasks committed and pushed. Verified at rung 3: build and lint clean, all ten assertions below passing against a production build, console silent. Three bugs found and fixed in B1-11 (hydration mismatch, invisible focus ring on the amber buttons, scroll reveals trapped at opacity 0). See `SESSION_LOG.md` for the full record.
+
+Note: `tailwind.config.ts` in the file list below was never created. The scaffold produced Tailwind v4, which has no JS config; tokens live in an `@theme` block in `app/globals.css` instead. Recorded in `DECISIONS.md` D-02.
 
 **Depends on:** nothing
 
