@@ -1,34 +1,56 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useSyncExternalStore } from "react";
 import Counter from "@/components/Counter";
 import { trackCta } from "@/lib/track";
 
+/*
+  False on the server and for the first client paint, true afterwards.
+  useSyncExternalStore is React's primitive for exactly this server/client
+  split, and unlike a setState in an effect it does not trigger a cascading
+  render.
+*/
+const subscribe = () => () => {};
+const useMounted = () =>
+  useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
+
 export default function Hero() {
   const reduceMotion = useReducedMotion();
+  const mounted = useMounted();
 
   /*
     One orchestrated entrance for the whole hero: fade plus a 16px rise,
-    0.5s ease out, staggered 0.06 between children. Under reduced motion the
-    variants collapse to the settled state and nothing animates.
+    0.5s ease out, staggered 0.06 between children.
+
+    The entrance only arms after mount. The server and the first client paint
+    both render the settled state, so the markup matches and there is no
+    hydration mismatch, and the hero copy is visible even without JavaScript.
+    Under reduced motion the variants stay collapsed and nothing animates.
   */
+  const animateEntrance = mounted && !reduceMotion;
+
   const container = {
     hidden: {},
     show: {
-      transition: { staggerChildren: reduceMotion ? 0 : 0.06 },
+      transition: { staggerChildren: animateEntrance ? 0.06 : 0 },
     },
   };
 
-  const item = reduceMotion
-    ? { hidden: { opacity: 1, y: 0 }, show: { opacity: 1, y: 0 } }
-    : {
+  const item = animateEntrance
+    ? {
         hidden: { opacity: 0, y: 16 },
         show: {
           opacity: 1,
           y: 0,
           transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
         },
-      };
+      }
+    : { hidden: { opacity: 1, y: 0 }, show: { opacity: 1, y: 0 } };
 
   return (
     <section id="top" className="relative overflow-hidden">
@@ -69,7 +91,7 @@ export default function Hero() {
           <a
             href="#signup"
             onClick={() => trackCta("hero")}
-            className="inline-block rounded-[6px] bg-amber px-7 py-3.5 font-semibold text-bg transition-all duration-150 hover:-translate-y-px hover:brightness-110"
+            className="cta-amber inline-block rounded-[6px] bg-amber px-7 py-3.5 font-semibold text-bg transition-[transform,filter] duration-150 hover:-translate-y-px hover:brightness-110"
           >
             Start the free course
           </a>

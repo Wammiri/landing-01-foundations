@@ -76,7 +76,7 @@ export default function SignupForm() {
               />
               <button
                 type="submit"
-                className="shrink-0 rounded-[6px] bg-amber px-6 py-3.5 font-semibold text-bg transition-all duration-150 hover:-translate-y-px hover:brightness-110"
+                className="cta-amber shrink-0 rounded-[6px] bg-amber px-6 py-3.5 font-semibold text-bg transition-[transform,filter] duration-150 hover:-translate-y-px hover:brightness-110"
               >
                 Send me Day 1 free
               </button>

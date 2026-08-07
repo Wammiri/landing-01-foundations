@@ -35,11 +35,28 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Amber focus rings on every interactive element, per SPEC.md section 8. */
+/*
+  Amber focus rings on every interactive element, per SPEC.md section 8.
+  The selector is repeated to outrank the preflight rule that would otherwise
+  resolve the outline to currentColor, which is near invisible on the amber
+  buttons. The dark ring sits between the outline and the button so the amber
+  ring stays legible against an amber background too.
+*/
 :focus-visible {
   outline: 2px solid var(--color-amber);
   outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--color-bg);
   border-radius: 2px;
+}
+
+/*
+  The amber filled buttons set `color` to the page background, so anything that
+  resolves the outline to currentColor renders a near invisible dark ring on an
+  amber field. Pinning the colour here keeps the ring amber on every control,
+  and the dark box-shadow separates it from the amber fill.
+*/
+.cta-amber:focus-visible {
+  outline-color: var(--color-amber);
 }
 
 /*

@@ -47,6 +47,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/*
+          Scroll revealed rows start at opacity 0 and are raised by
+          framer-motion. Without JavaScript that content would stay invisible,
+          so the no-JS branch forces it visible. The reveal is decoration; the
+          copy behind it is not.
+        */}
+        <noscript>
+          <style>{`
+            ol li, figure { opacity: 1 !important; transform: none !important; }
+          `}</style>
+        </noscript>
+      </head>
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} antialiased`}
       >
