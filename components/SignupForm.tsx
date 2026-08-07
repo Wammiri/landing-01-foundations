@@ -17,10 +17,16 @@ export default function SignupForm() {
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    trackCta("final");
 
     const value = email.trim();
     if (!EMAIL.test(value)) {
+      /*
+        The press counts as a CTA click even though it did not convert. On a
+        valid submit this is deliberately not sent: GA4 batches events that
+        arrive in the same tick, and a competing cta_click was starving
+        course_signup, which is the conversion that actually matters here.
+      */
+      trackCta("final");
       setError("Enter a valid email address.");
       return;
     }
