@@ -66,16 +66,19 @@ export default function RootLayout({
         <Noise />
         {children}
 
-        {/* GA4. Replace G-XXXXXXXXXX with the real Measurement ID. */}
+        {/*
+          GA4. A Measurement ID is not a secret: it ships in the client HTML of
+          every site that uses it, so it lives in source rather than an env var.
+        */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+          src="https://www.googletagmanager.com/gtag/js?id=G-0QXCCQYR17"
           strategy="afterInteractive"
         />
         <Script id="ga" strategy="afterInteractive">{`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-XXXXXXXXXX');
+          gtag('config', 'G-0QXCCQYR17');
         `}</Script>
 
         {/* Meta Pixel would be initialized here in production:

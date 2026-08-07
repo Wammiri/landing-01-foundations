@@ -128,13 +128,29 @@ Every significant decision, including the ones where nothing gets built. Status 
 
 ---
 
-## D-11. GA4 Measurement ID stays as the placeholder
+## D-11. GA4 Measurement ID, hardcoded once Isaac supplied it
 
-**Chosen:** `G-XXXXXXXXXX` is left exactly as written. The Meta Pixel block stays commented.
+**Chosen:** The placeholder `G-XXXXXXXXXX` was left in place through B1. Isaac supplied `G-0QXCCQYR17` on 2026-08-07 and it is now hardcoded in `app/layout.tsx` rather than read from an environment variable. The Meta Pixel block stays commented.
 
-**Why:** Human gate. Only Isaac can create the GA4 property and its data streams. Code that reads a value is written by Claude; the value is set by Isaac.
+**Why:** Human gate, correctly observed: only Isaac could create the property and its data stream. On how to store it, a GA4 Measurement ID is not a secret. It ships in the client HTML of every site that uses it and is visible to anyone with view source, so an env var would add a deploy step and a silent failure mode (analytics quietly off if the variable is unset) while protecting nothing.
 
-**Status:** settled, blocked pending Isaac
+**Traded off:** The other four suite projects each need their own ID written in directly rather than inherited from one shared variable. That is four one line edits, which is cheaper than four Vercel dashboard settings.
+
+**Status:** settled
+
+---
+
+## D-15. On a valid submit, only `course_signup` fires
+
+**Chosen:** `cta_click` with `location: "final"` fires on an invalid submit (the press that did not convert). On a valid submit only `course_signup` fires.
+
+**Why:** Found by live network verification, not by inspection. GA4 batches events arriving in the same tick, and the `cta_click` fired alongside `course_signup` was starving it: the event reached `dataLayer` but the collect request never left the browser, so the conversion was invisible in GA4. The signup is the conversion that matters, so it gets the tick to itself.
+
+**Traded off:** A slight departure from the spec's "on every CTA press" for this one case. The alternative was a reliably lost conversion event, which is worse. D-07's intent is preserved: every CTA press is still reported except the one that immediately reports something more specific.
+
+**Confidence:** high, verified by observing the collect requests on both paths. **Cost if wrong:** near zero, one line.
+
+**Status:** settled
 
 ---
 
